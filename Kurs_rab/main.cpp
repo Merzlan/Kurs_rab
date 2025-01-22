@@ -495,5 +495,82 @@ void showStats(Player& player) {
 
 int main() {
     setlocale(LC_ALL, "Rus");
+    std::string playerName;
+    std::cout << "Введите имя вашего персонажа: ";
+    std::cin >> playerName;
+
+    Player player(playerName);
+    std::cout << "Добро пожаловать в текстовую RPG, " << player.name << "!\n";
+
+    std::vector<Location> locations = {
+        Location("Лес Теней", "Мрачный лес, полный опасных существ. Здесь легко заблудиться.", {"Гоблин", "Слайм", "Волк"}),
+        Location("Горы Ужаса", "Высокие горы, где обитают сильные и опасные монстры.", {"Орк", "Скелет", "Паук"}),
+        Location("Лабиринт Тьмы", "Загадочный лабиринт, где скрываются могущественные существа.", {"Дракон", "Гигант", "Демон"}),
+        Location("Тронный Зал Короля Тьмы", "Финальная локация, где вас ждет битва с Королем Тьмы.", {"Король Тьмы"})
+    };
+
+    Shop shop;
+    int currentLocation = 0;
+    while (player.isAlive()) {
+        locations[currentLocation].showInfo();
+        std::cout << "1. Исследовать\n2. Посмотреть характеристики\n3. Магазин\n4. Перейти в следующую локацию\n5. Получить бесплатные монеты\n6. Просмотреть инвентарь\n7. Выйти\n";
+        int choice;
+        std::cin >> choice;
+
+        if (choice == 1) {
+            locations[currentLocation].explore(player);
+        }
+        else if (choice == 2) {
+            showStats(player);
+        }
+        else if (choice == 3) {
+            shop.showMenu(player);
+        }
+        else if (choice == 4) {
+            if (currentLocation == 0 && player.level >= 2) {
+                currentLocation = 1;
+                std::cout << "Вы перешли в локацию 2!\n";
+            }
+            else if (currentLocation == 1 && player.level >= 3) {
+                currentLocation = 2;
+                std::cout << "Вы перешли в локацию 3!\n";
+            }
+            else if (currentLocation == 2 && player.level >= 4) {
+                currentLocation = 3;
+                std::cout << "Вы перешли в локацию босса! Приготовьтесь к финальной битве!\n";
+            }
+            else {
+                std::cout << "Вы не можете перейти в следующую локацию. Требуется более высокий уровень.\n";
+            }
+        }
+        else if (choice == 5) {
+            player.getFreeCoins();
+        }
+        else if (choice == 6) {
+            player.inventory.showInventory();
+        }
+        else if (choice == 7) {
+            break;
+        }
+        else {
+            std::cout << "Неверный выбор. Попробуйте снова.\n";
+        }
+
+        // Проверка на победу над боссом
+        if (currentLocation == 3 && player.level >= 4) {
+            Monster boss("Король Тьмы", 200, 30, 15, 100, 500);
+            battle(player, boss);
+            if (player.isAlive()) {
+                std::cout << "Поздравляем! Вы победили Короля Тьмы и завершили игру!\n";
+                break;
+            }
+            else {
+                std::cout << "Вы погибли в битве с Королем Тьмы...\n";
+                break;
+            }
+        }
+    }
+
+    std::cout << "Игра завершена. Спасибо за игру!\n";
     return 0;
 }

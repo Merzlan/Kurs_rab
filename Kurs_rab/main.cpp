@@ -320,6 +320,92 @@ void battle(Player& player, Monster& monster) {
     }
 }
 
+// Класс локации
+class Location {
+public:
+    std::string name;
+    std::string description;
+    std::vector<std::string> monsters;
+
+    Location(std::string n, std::string desc, std::vector<std::string> mons) : name(n), description(desc), monsters(mons) {}
+
+    void showInfo() {
+        std::cout << "Локация: " << name << "\n";
+        std::cout << "Описание: " << description << "\n";
+        std::cout << "Монстры: ";
+        for (const auto& monster : monsters) {
+            std::cout << monster << " ";
+        }
+        std::cout << "\n";
+    }
+
+    void explore(Player& player) {
+        std::srand(std::time(0));
+        int encounter = std::rand() % 4;
+
+        switch (encounter) {
+        case 0: {
+            std::string potionType;
+            int potionChance = std::rand() % 3;
+            if (potionChance == 0) {
+                potionType = "Малое зелье здоровья";
+            }
+            else if (potionChance == 1) {
+                potionType = "Среднее зелье здоровья";
+            }
+            else {
+                potionType = "Большое зелье здоровья";
+            }
+            std::cout << "Вы нашли " << potionType << ". Оно добавлено в ваш инвентарь.\n";
+            player.inventory.addItem(new HealthPotion(potionType, 0, potionChance == 0 ? 20 : (potionChance == 1 ? 50 : 100)));
+            break;
+        }
+        case 1:
+            std::cout << "Вы ничего не нашли.\n";
+            break;
+        default: {
+            std::string monsterName = monsters[std::rand() % monsters.size()];
+            Monster* monster = nullptr;
+            if (monsterName == "Гоблин") {
+                monster = new Monster("Гоблин", 30, 8, 2, 10, 20);
+            }
+            else if (monsterName == "Слайм") {
+                monster = new Monster("Слайм", 20, 5, 1, 5, 15);
+            }
+            else if (monsterName == "Волк") {
+                monster = new Monster("Волк", 25, 7, 3, 8, 18);
+            }
+            else if (monsterName == "Орк") {
+                monster = new Monster("Орк", 50, 12, 5, 20, 40);
+            }
+            else if (monsterName == "Скелет") {
+                monster = new Monster("Скелет", 40, 10, 4, 15, 35);
+            }
+            else if (monsterName == "Паук") {
+                monster = new Monster("Паук", 45, 11, 6, 18, 38);
+            }
+            else if (monsterName == "Дракон") {
+                monster = new Monster("Дракон", 100, 20, 10, 50, 100);
+            }
+            else if (monsterName == "Гигант") {
+                monster = new Monster("Гигант", 90, 18, 8, 40, 90);
+            }
+            else if (monsterName == "Демон") {
+                monster = new Monster("Демон", 95, 19, 9, 45, 95);
+            }
+            else if (monsterName == "Король Тьмы") {
+                monster = new Monster("Король Тьмы", 200, 30, 15, 100, 500);
+            }
+
+            if (monster) {
+                battle(player, *monster);
+                delete monster;
+            }
+            break;
+        }
+        }
+    }
+};
 
 int main() {
     setlocale(LC_ALL, "Rus");

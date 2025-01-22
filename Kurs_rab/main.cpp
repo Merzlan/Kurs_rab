@@ -407,6 +407,75 @@ public:
     }
 };
 
+// Класс магазина
+class Shop {
+public:
+    void showMenu(Player& player) {
+        std::cout << "Добро пожаловать в магазин!\n";
+        std::cout << "1. Купить малое зелье здоровья (10 монет)\n";
+        std::cout << "2. Купить среднее зелье здоровья (25 монет)\n";
+        std::cout << "3. Купить большое зелье здоровья (50 монет)\n";
+        std::cout << "4. Улучшить навык\n";
+        std::cout << "5. Выйти\n";
+        int choice;
+        std::cin >> choice;
+
+        if (choice == 1) {
+            if (player.coins >= 10) {
+                player.spendCoins(10);
+                player.inventory.addItem(new HealthPotion("Малое зелье здоровья", 10, 20));
+                std::cout << "Вы купили малое зелье здоровья. Оно добавлено в ваш инвентарь.\n";
+            }
+            else {
+                std::cout << "У вас недостаточно монет.\n";
+            }
+        }
+        else if (choice == 2) {
+            if (player.coins >= 25) {
+                player.spendCoins(25);
+                player.inventory.addItem(new HealthPotion("Среднее зелье здоровья", 25, 50));
+                std::cout << "Вы купили среднее зелье здоровья. Оно добавлено в ваш инвентарь.\n";
+            }
+            else {
+                std::cout << "У вас недостаточно монет.\n";
+            }
+        }
+        else if (choice == 3) {
+            if (player.coins >= 50) {
+                player.spendCoins(50);
+                player.inventory.addItem(new HealthPotion("Большое зелье здоровья", 50, 100));
+                std::cout << "Вы купили большое зелье здоровья. Оно добавлено в ваш инвентарь.\n";
+            }
+            else {
+                std::cout << "У вас недостаточно монет.\n";
+            }
+        }
+        else if (choice == 4) {
+            std::cout << "Выберите навык для улучшения:\n";
+            std::cout << "1. Мощный удар (Уровень: " << player.powerfulStrike.level << ", Стоимость: " << 50 * player.powerfulStrike.level << " монет)\n";
+            std::cout << "2. Оглушение (Уровень: " << player.stun.level << ", Стоимость: " << 50 * player.stun.level << " монет)\n";
+            int skillChoice;
+            std::cin >> skillChoice;
+            if (skillChoice == 1) {
+                player.upgradeSkill(player.powerfulStrike);
+            }
+            else if (skillChoice == 2) {
+                player.upgradeSkill(player.stun);
+            }
+            else {
+                std::cout << "Неверный выбор.\n";
+            }
+        }
+        else if (choice == 5) {
+            std::cout << "Вы вышли из магазина.\n";
+        }
+        else {
+            std::cout << "Неверный выбор.\n";
+        }
+    }
+};
+
+
 int main() {
     setlocale(LC_ALL, "Rus");
     return 0;

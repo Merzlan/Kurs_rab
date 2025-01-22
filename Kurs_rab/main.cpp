@@ -61,6 +61,25 @@ public:
     }
 };
 
+// Класс способности
+class Skill {
+public:
+    std::string name;
+    int level;
+    int cooldown;
+    int currentCooldown;
+
+    Skill(std::string n, int lvl, int cd) : name(n), level(lvl), cooldown(cd), currentCooldown(0) {}
+
+    void reduceCooldown() {
+        if (currentCooldown > 0) currentCooldown--;
+    }
+
+    void upgrade() {
+        level++;
+    }
+};
+
 int main() {
     setlocale(LC_ALL, "Rus");
     return 0;

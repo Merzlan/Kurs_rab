@@ -475,6 +475,23 @@ public:
     }
 };
 
+void showStats(Player& player) {
+    std::cout << "Имя: " << player.name << "\n";
+    std::cout << "Уровень: " << player.level << "\n";
+    std::cout << "Здоровье: " << player.health << "\n";
+    std::cout << "Атака: " << player.attack << "\n";
+    std::cout << "Защита: " << player.defense << "\n";
+    std::cout << "Опыт: " << player.experience << "/" << player.getExperienceToNextLevel() << "\n";
+    std::cout << "Монеты: " << player.coins << "\n";
+    std::cout << "Зелья здоровья:\n";
+    std::cout << "- Малое: " << player.inventory.getItemCount("Малое зелье здоровья") << "\n";
+    std::cout << "- Среднее: " << player.inventory.getItemCount("Среднее зелье здоровья") << "\n";
+    std::cout << "- Большое: " << player.inventory.getItemCount("Большое зелье здоровья") << "\n";
+    std::cout << "Навыки:\n";
+    std::cout << "- Мощный удар (Уровень: " << player.powerfulStrike.level << ", Кулдаун: " << player.powerfulStrike.currentCooldown << ")\n";
+    std::cout << "- Оглушение (Уровень: " << player.stun.level << ", Кулдаун: " << player.stun.currentCooldown << ")\n";
+}
+
 
 int main() {
     setlocale(LC_ALL, "Rus");

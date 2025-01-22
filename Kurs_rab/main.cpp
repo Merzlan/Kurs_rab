@@ -80,6 +80,27 @@ public:
     }
 };
 
+// Класс игрока
+class Player {
+public:
+    std::string name;
+    int health;
+    int attack;
+    int defense;
+    int level;
+    int experience;
+    int coins;
+    int freeCoinsUsed;
+    Inventory inventory;
+    Skill powerfulStrike;
+    Skill stun;
+
+    Player(std::string n)
+        : name(n), health(100), attack(10), defense(5), level(1), experience(0), coins(0), freeCoinsUsed(0),
+        powerfulStrike("Мощный удар", 1, 3), stun("Оглушение", 1, 5) {}
+};
+
+
 int main() {
     setlocale(LC_ALL, "Rus");
     return 0;

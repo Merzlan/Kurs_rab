@@ -25,6 +25,40 @@ public:
 class Inventory {
 public:
     std::vector<Item*> items; 
+    void addItem(Item* item) {
+        items.push_back(item);
+    }
+
+    void removeItem(const std::string& itemName) {
+        for (auto it = items.begin(); it != items.end(); ++it) {
+            if ((*it)->name == itemName) {
+                items.erase(it);
+                break;
+            }
+        }
+    }
+
+    int getItemCount(const std::string& itemName) {
+        int count = 0;
+        for (const auto& item : items) {
+            if (item->name == itemName) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    void showInventory() {
+        if (items.empty()) {
+            std::cout << "Ваш инвентарь пуст.\n";
+        }
+        else {
+            std::cout << "Ваш инвентарь:\n";
+            for (const auto& item : items) {
+                std::cout << "- " << item->name << "\n";
+            }
+        }
+    }
 };
 
 int main() {

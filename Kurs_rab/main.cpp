@@ -153,6 +153,24 @@ public:
             return false;
         }
     }
+
+    void useSkill(Skill& skill, class Monster& monster);
+
+    void reduceCooldowns() {
+        powerfulStrike.reduceCooldown();
+        stun.reduceCooldown();
+    }
+
+    void upgradeSkill(Skill& skill) {
+        if (coins >= 50 * skill.level) {
+            coins -= 50 * skill.level;
+            skill.upgrade();
+            std::cout << "Навык " << skill.name << " улучшен до уровня " << skill.level << "!\n";
+        }
+        else {
+            std::cout << "У вас недостаточно монет для улучшения навыка.\n";
+        }
+    }
 };
 
 // Класс монстра
@@ -177,7 +195,31 @@ public:
     }
 };
 
+void Player::useSkill(Skill& skill, Monster& monster) {
+    if (skill.currentCooldown > 0) {
+        std::cout << "Навык " << skill.name << " на перезарядке. Осталось ходов: " << skill.currentCooldown << "\n";
+        return;
+    }
 
+    if (skill.name == "Мощный удар") {
+        int damage = (attack * 2) - monster.defense;
+        if (damage < 0) damage = 0;
+        monster.takeDamage(damage);
+        std::cout << "Вы использовали Мощный удар и нанесли " << damage << " урона!\n";
+    }
+    else if (skill.name == "Оглушение") {
+        int stunChance = 50 + (skill.level - 1) * 10;
+        if (std::rand() % 100 < stunChance) {
+            monster.attack = 0;
+            std::cout << "Вы оглушили монстра! Он пропустит следующий ход.\n";
+        }
+        else {
+            std::cout << "Оглушение не сработало!\n";
+        }
+    }
+
+    skill.currentCooldown = skill.cooldown;
+}
 
 int main() {
     setlocale(LC_ALL, "Rus");

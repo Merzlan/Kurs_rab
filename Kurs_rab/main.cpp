@@ -195,6 +195,7 @@ public:
     }
 };
 
+//Функция для использлвания способности
 void Player::useSkill(Skill& skill, Monster& monster) {
     if (skill.currentCooldown > 0) {
         std::cout << "Навык " << skill.name << " на перезарядке. Осталось ходов: " << skill.currentCooldown << "\n";
@@ -220,6 +221,105 @@ void Player::useSkill(Skill& skill, Monster& monster) {
 
     skill.currentCooldown = skill.cooldown;
 }
+
+// Функция для попытки убежать
+bool tryToEscape() {
+    std::srand(std::time(0));
+    int chance = std::rand() % 100;
+    return chance < 25;
+}
+
+//Функция для проведения боя
+void battle(Player& player, Monster& monster) {
+    std::cout << "Вы встретили монстра: " << monster.name << "!\n";
+    while (player.isAlive() && monster.isAlive()) {
+        std::cout << player.name << " (HP: " << player.health << ") vs " << monster.name << " (HP: " << monster.health << ")\n";
+        std::cout << "1. Атаковать\n2. Использовать зелье здоровья\n3. Использовать навык\n4. Попытаться убежать\n";
+        int choice;
+        std::cin >> choice;
+
+        if (choice == 1) {
+            int damage = player.attack - monster.defense;
+            if (damage < 0) damage = 0;
+            monster.takeDamage(damage);
+            std::cout << "Вы нанесли " << damage << " урона!\n";
+        }
+        else if (choice == 2) {
+            std::cout << "Выберите зелье:\n";
+            std::cout << "1. Малое зелье здоровья (" << player.inventory.getItemCount("Малое зелье здоровья") << " осталось)\n";
+            std::cout << "2. Среднее зелье здоровья (" << player.inventory.getItemCount("Среднее зелье здоровья") << " осталось)\n";
+            std::cout << "3. Большое зелье здоровья (" << player.inventory.getItemCount("Большое зелье здоровья") << " осталось)\n";
+            int potionChoice;
+            std::cin >> potionChoice;
+            if (potionChoice == 1) {
+                player.inventory.removeItem("Малое зелье здоровья");
+                player.heal(20);
+                std::cout << "Вы использовали малое зелье здоровья и восстановили 20 HP.\n";
+            }
+            else if (potionChoice == 2) {
+                player.inventory.removeItem("Среднее зелье здоровья");
+                player.heal(50);
+                std::cout << "Вы использовали среднее зелье здоровья и восстановили 50 HP.\n";
+            }
+            else if (potionChoice == 3) {
+                player.inventory.removeItem("Большое зелье здоровья");
+                player.heal(100);
+                std::cout << "Вы использовали большое зелье здоровья и восстановили 100 HP.\n";
+            }
+            else {
+                std::cout << "Неверный выбор. Пропуск хода.\n";
+            }
+        }
+        else if (choice == 3) {
+            std::cout << "Выберите навык:\n";
+            std::cout << "1. Мощный удар (Уровень: " << player.powerfulStrike.level << ", Кулдаун: " << player.powerfulStrike.currentCooldown << ")\n";
+            std::cout << "2. Оглушение (Уровень: " << player.stun.level << ", Кулдаун: " << player.stun.currentCooldown << ")\n";
+            int skillChoice;
+            std::cin >> skillChoice;
+            if (skillChoice == 1) {
+                player.useSkill(player.powerfulStrike, monster);
+            }
+            else if (skillChoice == 2) {
+                player.useSkill(player.stun, monster);
+            }
+            else {
+                std::cout << "Неверный выбор. Пропуск хода.\n";
+            }
+        }
+        else if (choice == 4) {
+            if (tryToEscape()) {
+                std::cout << "Вам удалось сбежать!\n";
+                return;
+            }
+            else {
+                std::cout << "Побег не удался! Монстр атакует вас.\n";
+            }
+        }
+        else {
+            std::cout << "Неверный выбор. Пропуск хода.\n";
+        }
+
+        if (monster.isAlive()) {
+            int damage = monster.attack - player.defense;
+            if (damage < 0) damage = 0;
+            player.takeDamage(damage);
+            std::cout << monster.name << " нанес вам " << damage << " урона!\n";
+        }
+
+        player.reduceCooldowns();
+    }
+
+    if (player.isAlive()) {
+        std::cout << "Вы победили " << monster.name << "!\n";
+        player.gainExperience(monster.experience);
+        player.addCoins(monster.coins);
+        std::cout << "Вы получили " << monster.coins << " монет и " << monster.experience << " опыта.\n";
+    }
+    else {
+        std::cout << "Вы погибли...\n";
+    }
+}
+
 
 int main() {
     setlocale(LC_ALL, "Rus");

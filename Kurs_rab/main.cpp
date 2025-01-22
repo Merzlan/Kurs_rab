@@ -98,6 +98,61 @@ public:
     Player(std::string n)
         : name(n), health(100), attack(10), defense(5), level(1), experience(0), coins(0), freeCoinsUsed(0),
         powerfulStrike("Мощный удар", 1, 3), stun("Оглушение", 1, 5) {}
+
+    void takeDamage(int damage) {
+        health -= damage;
+        if (health < 0) health = 0;
+    }
+
+    void heal(int amount) {
+        health += amount;
+        if (health > 100) health = 100;
+    }
+
+    void gainExperience(int exp) {
+        experience += exp;
+        if (experience >= getExperienceToNextLevel()) {
+            levelUp();
+        }
+    }
+
+    void levelUp() {
+        level++;
+        attack += 5;
+        defense += 3;
+        health = 100;
+        experience = 0;
+        std::cout << "Вы достигли уровня " << level << "! Ваши характеристики улучшены.\n";
+    }
+
+    int getExperienceToNextLevel() const {
+        return 100 + (level - 1) * 50;
+    }
+
+    bool isAlive() {
+        return health > 0;
+    }
+
+    void addCoins(int amount) {
+        coins += amount;
+    }
+
+    void spendCoins(int amount) {
+        coins -= amount;
+    }
+
+    bool getFreeCoins() {
+        if (freeCoinsUsed < 3) {
+            coins += 10;
+            freeCoinsUsed++;
+            std::cout << "Вы получили 10 монет. Осталось попыток: " << 3 - freeCoinsUsed << "\n";
+            return true;
+        }
+        else {
+            std::cout << "Вы исчерпали лимит бесплатных монет.\n";
+            return false;
+        }
+    }
 };
 
 

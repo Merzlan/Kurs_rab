@@ -155,6 +155,29 @@ public:
     }
 };
 
+// Класс монстра
+class Monster {
+public:
+    std::string name;
+    int health;
+    int attack;
+    int defense;
+    int coins;
+    int experience;
+
+    Monster(std::string n, int h, int a, int d, int c, int exp) : name(n), health(h), attack(a), defense(d), coins(c), experience(exp) {}
+
+    void takeDamage(int damage) {
+        health -= damage;
+        if (health < 0) health = 0;
+    }
+
+    bool isAlive() {
+        return health > 0;
+    }
+};
+
+
 
 int main() {
     setlocale(LC_ALL, "Rus");
